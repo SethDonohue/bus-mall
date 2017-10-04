@@ -16,7 +16,12 @@ Pictures.lastImages = [];
 var oneEl = document.getElementById('one');
 var twoEl = document.getElementById('two');
 var threeEl = document.getElementById('three');
-
+//chart variables
+var votesChart;
+// var chartDrawn = false;
+//Arrays to hold Data for the Charts
+var totalVotes = [];
+var titles = [];
 //=========================CONSTRUCTORS=========================
 
 // ++++++++++++++++++++++++++++++++++++++++ -----2------
@@ -35,43 +40,46 @@ function Pictures (name, filePath, altName) {
 
 // ++++++++++++++++++++++++++++++++++++++++ -----3------
 //make new Image instances/ objects
-new Pictures ('bag', 'img/bag.jpg','bag');
-new Pictures ('banana', 'img/banana.jpg','banana');
-new Pictures ('bathroom', 'img/bathroom.jpg','bathroom');
-new Pictures ('boots', 'img/boots.jpg','boots');
-new Pictures ('breakfast', 'img/breakfast.jpg','breakfast');
-new Pictures ('bubblegum', 'img/bubblegum.jpg','bubblegum');
-new Pictures ('chair', 'img/chair.jpg','chair');
-new Pictures ('cthulhu', 'img/cthulhu.jpg','cthulhu');
-new Pictures ('dog duck', 'img/dog-duck.jpg','dogduck');
-new Pictures ('dragon', 'img/dragon.jpg','dragon');
-new Pictures ('pen', 'img/pen.jpg','pen');
-new Pictures ('pet sweep', 'img/pet-sweep.jpg','petsweep');
-new Pictures ('scissors', 'img/scissors.jpg','scissors');
-new Pictures ('shark', 'img/shark.jpg','shark');
-new Pictures ('sweep', 'img/sweep.png','sweep');
-new Pictures ('tauntaun', 'img/tauntaun.jpg','tauntaun');
-new Pictures ('unicorn', 'img/unicorn.jpg','unicorn');
-new Pictures ('usb', 'img/usb.gif','usb');
-new Pictures ('water can', 'img/water-can.jpg','watercan');
-new Pictures ('wine glass', 'img/wine-glass.jpg','wineglass');
+new Pictures ('Bag', 'img/bag.jpg','bag');
+new Pictures ('Banana', 'img/banana.jpg','banana');
+new Pictures ('Bathroom', 'img/bathroom.jpg','bathroom');
+new Pictures ('Boots', 'img/boots.jpg','boots');
+new Pictures ('Breakfast', 'img/breakfast.jpg','breakfast');
+new Pictures ('Bubblegum', 'img/bubblegum.jpg','bubblegum');
+new Pictures ('Chair', 'img/chair.jpg','chair');
+new Pictures ('Cthulhu', 'img/cthulhu.jpg','cthulhu');
+new Pictures ('Dog Duck', 'img/dog-duck.jpg','dogduck');
+new Pictures ('Dragon', 'img/dragon.jpg','dragon');
+new Pictures ('Pen', 'img/pen.jpg','pen');
+new Pictures ('Pet Sweep', 'img/pet-sweep.jpg','petsweep');
+new Pictures ('Scissors', 'img/scissors.jpg','scissors');
+new Pictures ('Shark', 'img/shark.jpg','shark');
+new Pictures ('Sweep', 'img/sweep.png','sweep');
+new Pictures ('Tauntaun', 'img/tauntaun.jpg','tauntaun');
+new Pictures ('Unicorn', 'img/unicorn.jpg','unicorn');
+new Pictures ('Usb', 'img/usb.gif','usb');
+new Pictures ('Water Can', 'img/water-can.jpg','watercan');
+new Pictures ('Wine Glass', 'img/wine-glass.jpg','wineglass');
 
-var votesChart;
-// var chartDrawn = false;
-//Arrays to hold Data for the Charts
-var votes = [];
-var titles = [];
 
 
 //=========================FUNCTION DECLARATIONS=========================
+
+//Random INdex creator
+// Pictures.randomIndex = function () {
+//   var randomOne =  (Math.floor(Math.random() * Pictures.allInfo.length));
+//   var randomTwo =  (Math.floor(Math.random() * Pictures.allInfo.length));
+//   var randomThree =  (Math.floor(Math.random() * Pictures.allInfo.length));
+// }
 
 // ++++++++++++++++++++++++++++++++++++++++ -----5------
 //funcTion to randomly display an Image
 Pictures.randomImage = function () {
   //generate random indexes/indices
-  var randomOne =  (Math.floor(Math.random() * Pictures.allInfo.length));
-  var randomTwo =  (Math.floor(Math.random() * Pictures.allInfo.length));
-  var randomThree =  (Math.floor(Math.random() * Pictures.allInfo.length));
+  //NEED TO  using fucntion to DRY code
+  var randomOne = (Math.floor(Math.random() * Pictures.allInfo.length));
+  var randomTwo = (Math.floor(Math.random() * Pictures.allInfo.length));
+  var randomThree = (Math.floor(Math.random() * Pictures.allInfo.length));
 
   // ++++++++++++++++++++++++++++++++++++++++ -----6------
   //make sure each image was not used in last sequence! If they are randomize them again
@@ -144,49 +152,145 @@ Pictures.showResults = function () {
 //=========================CHART=========================
 // ++++++++++++++++++++++++++++++++++++++++ -----13------
 
-
-var data = {
-  labels: titles, // titles array we declared earlier
-  datasets: [
-    {
-      data: votes, // votes array we declared earlier
-      backgroundColor: [
-        'bisque',
-        'darkgray',
-        'burlywood',
-        'lightblue',
-        'navy'
-      ],
-      hoverBackgroundColor: [
-        'purple',
-        'purple',
-        'purple',
-        'purple',
-        'purple'
-      ]
-    }]
-};
+// var data = {
+//   labels: titles, // titles array we declared earlier
+//   datasets: [
+//     {
+//       options: {
+//         legend: {
+//           display: false,
+//           title: {
+//             display: true,
+//             text: 'Votes Per Item',
+//             fontColor: 'rgb(255, 99, 132)'
+//           }
+//         },
+//         responsive: false,
+//         animation: {
+//           duration: 100,
+//           easing: 'easeOutBounce'
+//         }
+//       },
+//       backgroundColor: [
+//         'bisque',
+//         'darkgray',
+//         'burlywood',
+//         'lightblue',
+//         'navy',
+//         'bisque',
+//         'darkgray',
+//         'burlywood',
+//         'lightblue',
+//         'navy',
+//         'bisque',
+//         'darkgray',
+//         'burlywood',
+//         'lightblue',
+//         'navy',
+//         'bisque',
+//         'darkgray',
+//         'burlywood',
+//         'lightblue',
+//         'navy'
+//
+//       ],
+//       hoverBackgroundColor: [
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple',
+//         'purple'
+//       ]
+//     }]
+// };
 
 function drawChart() {
   var ctx = document.getElementById('chart').getContext('2d');
   votesChart = new Chart(ctx,{
     type: 'bar',
-    data: data,
-    options: {
-      responsive: false,
-      animation: {
-        duration: 100,
-        easing: 'easeOutBounce'
-      }
-    },
-    scales: {
-      yAxes: [{
-        ticks: {
-          max: 10,
-          min: 0,
-          stepSize: 1.0
-        }
+    data: {
+      labels: titles,
+      datasets: [{
+        label: '# of Votes',
+        data: totalVotes,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
+          'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(153, 102, 255, 0.5)',
+          'rgba(255, 159, 64, 0.5)',
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
+          'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(153, 102, 255, 0.5)',
+          'rgba(255, 159, 64, 0.5)',
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
+          'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(153, 102, 255, 0.5)',
+          'rgba(255, 159, 64, 0.5)',
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(54, 162, 235, 0.5)',
+          'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(153, 102, 255, 0.5)',
+          'rgba(255, 159, 64, 0.5)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
       }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }
+        }]
+      }
     }
   });
   // chartDrawn = true;
@@ -211,33 +315,33 @@ Pictures.onClick = function(e) {
     //SHOW RESULTS, function to show resultsList
     Pictures.showResults();
     drawChart ();
+    document.getElementById('voting').innerHTML = '';
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('header1').textContent = 'Here are the Votes Per Item after 25 votes.';
   }
 
   //INCREMENT total clicks
   Pictures.userClicksLeft--;
-  //render new images , use existing function
-  Pictures.randomImage();
+
+  //tracker for what target index?
+  // console.log('Start Target: ', e.target.altName);
+  // var title = '';
 
   //count votes for each image, if image is selected then add to it's vote total
-  console.log('TARGET: ', e.target.alt);
-  // var titleIndex = e.target; // pulled out to only add titles of selected images to bar chart
   for (var i = 0; i < Pictures.allInfo.length; i++) {
-    console.log('Picture altName', Pictures.allInfo[i].altName);
-    console.log('Target alt', e.target.alt);
+    // console.log(Pictures.allInfo[i].altName === e.target.alt);
     if (Pictures.allInfo[i].altName === e.target.alt) {
       console.log('!!!! VOTE COUNTED !!!');
       Pictures.allInfo[i].votes++;
-      votes[i] = Pictures.allInfo[i].votes;
+      totalVotes[i] = Pictures.allInfo[i].votes;
       titles[i] = Pictures.allInfo[i].name;
-      // return;
+      // index = i;
+      break;
     }
   }
-  // titleIndex = i;
-  // //add Title to Titles Array if it has been vogted for
-  // // titles[titleIndex] = e.target.name;
-  // console.log('Chart Title added: ', Pictures.allInfo[titleIndex].name);
-  // titles[titleIndex] = Pictures.allInfo[titleIndex].name;
 
+  //render new images , use existing function
+  Pictures.randomImage();
 
 };
 

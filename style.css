@@ -1,0 +1,18 @@
+/*//Main Styling Page*/
+
+
+body section ul li {
+  display: inline-block;
+  margin: 20px;
+  border: 2px solid red;
+  border-radius: 10px;
+}
+
+#results li {
+  margin: 10px;
+  border: 1px solid black;
+}
+body ul li img {
+  width: 150px;
+  margin: 10px;
+}

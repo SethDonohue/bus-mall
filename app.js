@@ -56,8 +56,14 @@ new Pictures ('usb', 'img/usb.gif','usb');
 new Pictures ('water can', 'img/water-can.jpg','watercan');
 new Pictures ('wine glass', 'img/wine-glass.jpg','wineglass');
 
+var votesChart;
+// var chartDrawn = false;
+//Arrays to hold Data for the Charts
+var votes = [];
+var titles = [];
 
-//=========================FUNCTIONS=========================
+
+//=========================FUNCTION DECLARATIONS=========================
 
 // ++++++++++++++++++++++++++++++++++++++++ -----5------
 //funcTion to randomly display an Image
@@ -131,6 +137,66 @@ Pictures.showResults = function () {
   }
 };
 
+// function updateChartArrays() {
+//   totals[].push()
+// }
+
+//=========================CHART=========================
+// ++++++++++++++++++++++++++++++++++++++++ -----13------
+
+
+var data = {
+  labels: titles, // titles array we declared earlier
+  datasets: [
+    {
+      data: votes, // votes array we declared earlier
+      backgroundColor: [
+        'bisque',
+        'darkgray',
+        'burlywood',
+        'lightblue',
+        'navy'
+      ],
+      hoverBackgroundColor: [
+        'purple',
+        'purple',
+        'purple',
+        'purple',
+        'purple'
+      ]
+    }]
+};
+
+function drawChart() {
+  var ctx = document.getElementById('chart').getContext('2d');
+  votesChart = new Chart(ctx,{
+    type: 'bar',
+    data: data,
+    options: {
+      responsive: false,
+      animation: {
+        duration: 100,
+        easing: 'easeOutBounce'
+      }
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          max: 10,
+          min: 0,
+          stepSize: 1.0
+        }
+      }]
+    }
+  });
+  // chartDrawn = true;
+}
+
+// function hideChart() {
+//   document.getElementById('funky-chart').hidden = true;
+// }
+
+
 //=========================EVENT HANLDER=========================
 Pictures.onClick = function(e) {
   //input validation
@@ -144,6 +210,7 @@ Pictures.onClick = function(e) {
     threeEl.removeEventListener('click',Pictures.onClick);
     //SHOW RESULTS, function to show resultsList
     Pictures.showResults();
+    drawChart ();
   }
 
   //INCREMENT total clicks
@@ -152,21 +219,30 @@ Pictures.onClick = function(e) {
   Pictures.randomImage();
 
   //count votes for each image, if image is selected then add to it's vote total
+  console.log('TARGET: ', e.target.alt);
+  // var titleIndex = e.target; // pulled out to only add titles of selected images to bar chart
   for (var i = 0; i < Pictures.allInfo.length; i++) {
     console.log('Picture altName', Pictures.allInfo[i].altName);
     console.log('Target alt', e.target.alt);
     if (Pictures.allInfo[i].altName === e.target.alt) {
       console.log('!!!! VOTE COUNTED !!!');
       Pictures.allInfo[i].votes++;
-      return;
+      votes[i] = Pictures.allInfo[i].votes;
+      titles[i] = Pictures.allInfo[i].name;
+      // return;
     }
   }
+  // titleIndex = i;
+  // //add Title to Titles Array if it has been vogted for
+  // // titles[titleIndex] = e.target.name;
+  // console.log('Chart Title added: ', Pictures.allInfo[titleIndex].name);
+  // titles[titleIndex] = Pictures.allInfo[titleIndex].name;
 
 
 };
 
 
-//=========================FUNCTIONAL CODE ON PAGE LOAD=========================
+//=========================FUNCTIONAL CODE ON PAGE LOAD & EVENT LISTNERS=========================
 
 //Event Listner to wait for CLICK on Images
 // ++++++++++++++++++++++++++++++++++++++++ -----12------

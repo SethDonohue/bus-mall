@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Bus Mall</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="Chart.min.js" type="text/javascript"></script>
-  </head>
-  <body>
+<head>
+  <meta charset="utf-8">
+  <title>Bus Mall Product Testing</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="Chart.min.js" type="text/javascript"></script>
+</head>
+<body>
 
-    <h1 id="header1">Click on each photo to vote for your favorite of the three!</h1>
+  <h1 id="header1">Help us figure out the right products to put into our catalog!</h1>
+  <h1 id="header2"></h1>
+  <ul id="instructions">
+    <li>Just choose your favorite product form the selection of 3 available.</li>
+    <li>You'll have a total of 25 votes and then be shown the overall results of everyone who has voted to date.</li>
+    <li>We highly value <u>your opinion</u> and <u>your time</u>, and this should only take a few minutes to give us extremely valuable feedback! <p><i>Thank you!</i></p></li>
+  </ul>
 
-    <ul id='results'></ul>
-    <section id="voting">
-      <ul>
-        <li><img id="one" src="" width="200px" alt=""></li>
-        <li><img id="two" src="" width="200px" alt=""></li>
-        <li><img id="three" src="" width="200px" alt=""></li>
-      </ul>
-      </section>
+  <ul id='results'></ul>
+  <section id="voting">
+    <ul>
+      <li><img id="one" src="" width="200px" alt=""></li>
+      <li><img id="two" src="" width="200px" alt=""></li>
+      <li><img id="three" src="" width="200px" alt=""></li>
+    </ul>
+  </section>
 
-      <canvas id="chart" width="800px" height="400px"></canvas>
+  <canvas id="chart" width="800px" height="400px"></canvas>
 
-
-      <script src="app.js"></script>
-  </body>
+  <script src="app.js"></script>
+</body>
 </html>

@@ -1,13 +1,12 @@
 'use strict';
 
+//==================Variables accessable by everything (GLOBAL and Attatched to Objects)====================
 
-//=========================Variables accessable by everything (GLOBAL and Attatched to Objects)=========================
-
-// ++++++++++++++++++++++++++++++++++++++++ -----1-----*** This is purely for my thoguth process to keep track of the order I built
+// ++++++++++++++++++++++++++++++++++++++++ -----1-----*** This is purely for my thought process to keep track of the order I built
 //Array to store All Objects  things
 Pictures.allInfo = [];
 //Keep track of user click left
-Pictures.userClicksLeft = 24;
+Pictures.userVotes = 0;
 //track previously deisplayed images
 Pictures.lastImages = [];
 
@@ -20,7 +19,6 @@ var twoEl = document.getElementById('two');
 var threeEl = document.getElementById('three');
 //chart variables
 var votesChart;
-// var chartDrawn = false;
 //Arrays to hold Data for the Charts
 var totalVotes = [];
 var titles = [];
@@ -30,11 +28,10 @@ var totalViews = [];
 
 // ++++++++++++++++++++++++++++++++++++++++ -----2------
 // Constructor to create Image objects
-//needs to store views, votes, name, filepath.... PUsh to all data storing array
-function Pictures (name, filePath, altName) {
+function Pictures (name, filePath, alt) {
   this.name = name;
   this.filePath = filePath;
-  this.altName = altName;
+  this.alt = alt;
   this.views = 0;
   this.votes = 0;
   Pictures.allInfo.push(this);
@@ -42,16 +39,24 @@ function Pictures (name, filePath, altName) {
 
 //=========================INSTANCES / NEW OBJECTS=========================
 
-if(Boolean(localStorage.test) === true) {
-  // retrieve storage
+// If localstorage exists then retrieve storage
+if(localStorage.allInfo) {
   console.log('LOCAL STORAGE EXISTS');
+  console.log(typeof(localStorage.summedVotes));
   Pictures.allInfo = JSON.parse(localStorage.allInfo);
+  // Total votes across all userVotes
+  console.log('Summed Votes from Storage: ', localStorage.summedVotes);
+  console.log(typeof(localStorage.summedVotes));
+  Pictures.summedVotes = parseInt(localStorage.summedVotes);
+  console.log(typeof(Pictures.summedVotes));
+
+
 }else {
   console.log('NO LOCAL STORAGE');
-  //LOCAL STORAGE function
-  // set storage/instances
+  Pictures.summedVotes = 0;
   // ++++++++++++++++++++++++++++++++++++++++ -----3------
-  //make new Image instances/ objects
+  //If local storage doesn't exist then make new Image instances/ objects
+
   new Pictures ('Bag', 'img/bag.jpg','bag');
   new Pictures ('Banana', 'img/banana.jpg','banana');
   new Pictures ('Bathroom', 'img/bathroom.jpg','bathroom');
@@ -74,9 +79,7 @@ if(Boolean(localStorage.test) === true) {
   new Pictures ('Wine Glass', 'img/wine-glass.jpg','wineglass');
 };
 
-
 //=========================FUNCTION DECLARATIONS=========================
-
 
 //Random Index creator
 Pictures.randomIndex = function () {
@@ -87,47 +90,40 @@ Pictures.randomIndex = function () {
 };
 
 // ++++++++++++++++++++++++++++++++++++++++ -----5------
-//funcTion to randomly display an Image
+//function to randomly display an Image
 Pictures.randomImage = function () {
-  //generate random indexes/indices
-  //NEED TO  using fucntion to DRY code
+  //Store a RandomIndex to chose form the allInfo array
   var random = Pictures.randomIndex ();
-  // console.log('Random index Numbers: ', random);
 
   // ++++++++++++++++++++++++++++++++++++++++ -----6------
   //make sure each image was not used in last sequence! If they are randomize them again
   while (Pictures.lastImages.includes(random[0]) || Pictures.lastImages.includes(random[1]) ||   Pictures.lastImages.includes(random[2])) {
-    // console.log(' Picture used last turn!');
+    console.log(' Picture used last turn!');
     random = Pictures.randomIndex ();
   }
 
   // ++++++++++++++++++++++++++++++++++++++++ -----7------
   // make sure the random images on current view are not equal to each other!!! If they are randomize them again
   while (random[0] === random[1] || random[0] === random[2] || random[1] === random[2]) {
-    // console.log(' Current pictures are equal to each other! Redraw to remove duplicates!!! ');
+    console.log(' Current pictures are equal to each other! Redraw to remove duplicates!!! ');
     random = Pictures.randomIndex ();
   }
 
   // ++++++++++++++++++++++++++++++++++++++++ -----8------
-  // Update Source for each image
+  // Update Source and Alt for each image
   oneEl.src = Pictures.allInfo[random[0]].filePath;
+  oneEl.alt = Pictures.allInfo[random[0]].alt;
   twoEl.src = Pictures.allInfo[random[1]].filePath;
+  twoEl.alt = Pictures.allInfo[random[1]].alt;
   threeEl.src = Pictures.allInfo[random[2]].filePath;
+  threeEl.alt = Pictures.allInfo[random[2]].alt;
 
-  //update Alt for each image
-  oneEl.alt = Pictures.allInfo[random[0]].altName;
-  twoEl.alt = Pictures.allInfo[random[1]].altName;
-  threeEl.alt = Pictures.allInfo[random[2]].altName;
 
   // ++++++++++++++++++++++++++++++++++++++++ -----9------
   // INCREMENT the views on these images
   Pictures.allInfo[random[0]].views++;
-  // Pictures.views = Pictures.allInfo[random[0]].views;
   Pictures.allInfo[random[1]].views++;
-  // Pictures.views = Pictures.allInfo[random[1]].views;
   Pictures.allInfo[random[2]].views++;
-  // console.log('VIEWS', Pictures.allInfo[random[2]].views);
-  // Pictures.views = Pictures.allInfo[random[2]].views;
 
   // ++++++++++++++++++++++++++++++++++++++++ -----10------
   // KEEP TRACK of these images / add to lastImages, array methods OR overwrite array
@@ -136,21 +132,18 @@ Pictures.randomImage = function () {
   Pictures.lastImages[2] = random[2];
 };
 
+//Shows results before chart, CURRENTLY OBSOLETE AS NOW USING CHART.JS
 Pictures.showResults = function () {
   for (var i = 0; i < Pictures.allInfo.length; i++) {
     //get total views and votes for an elements
     var views = Pictures.allInfo[i].views;
     var votes = Pictures.allInfo[i].votes;
-    // console.log(Pictures.allInfo[i].views);
-    // console.log(Pictures.allInfo[i].votes);
 
-    //put views onto screen?
     // create li element
     var ulEl = document.getElementById('results');
     var liEl = document.createElement('li');
 
     //add conent to li
-    // console.log('liEl: ',liEl);
     liEl.textContent = Pictures.allInfo[i].name.toUpperCase() + ' has ' + views + ' views and ' + votes + ' votes.';
 
     ulEl.appendChild(liEl);
@@ -226,6 +219,7 @@ function drawChart() {
       }]
     },
     options: {
+      responsive: false,
       scales: {
         yAxes: [{
           ticks: {
@@ -235,61 +229,59 @@ function drawChart() {
       }
     }
   });
-  // chartDrawn = true;
 }
-
-// function hideChart() {
-//   document.getElementById('funky-chart').hidden = true;
-// }
-
 
 //=========================EVENT HANLDER=========================
 Pictures.onClick = function(e) {
-  //input validation
 
-
-  //kick out if we hit maximum clicks, stop event listener
-  if(Pictures.userClicksLeft < 1) {
-    // console.log('out of votes');
+  //kick out if we hit maximum clicks
+  if(Pictures.userVotes > 23) {
+    console.log('out of votes');
+    //Store info into localstoarge
     localStorage.allInfo = JSON.stringify(Pictures.allInfo);
-    localStorage.test = true;
 
-    //stop event listener
+    //add 25 to toal summed votes for all users
+    Pictures.summedVotes = (Pictures.summedVotes + 25);
+    localStorage.summedVotes = Pictures.summedVotes;
+
+    //stop event listeners
     oneEl.removeEventListener('click',Pictures.onClick);
     twoEl.removeEventListener('click',Pictures.onClick);
     threeEl.removeEventListener('click',Pictures.onClick);
+
     //SHOW RESULTS, function to show resultsList
-    Pictures.showResults();
+    Pictures.showResults(); //OBOSOLETE DUE TO CHART
+
+    //Create Chart
     drawChart ();
+
+    // Clear out instructions, pictures and listed results to show chart
     document.getElementById('voting').innerHTML = '';
     document.getElementById('results').innerHTML = '';
-    document.getElementById('header1').textContent = 'Here are the Votes Per Item after 25 votes.';
+    document.getElementById('instructions').innerHTML = '';
 
-    // var result = [];
+    //Change the header to address chart
+    document.getElementById('header1').textContent = 'Here are the Cumulative Votes Per Item after ' + Pictures.summedVotes + ' total votes.';
+    document.getElementById('header2').textContent = (Pictures.summedVotes / 25) + ' users have voted.';
 
-    // for (var i = 0; i < Pictures.allInfo.length; i++) {
-    //   var obj = {
-    //     Pictures.allInfo[i].name: Pictures.allInfo[i].votes;
-    //   }
-    //   return obj;
-    // }
   }
 
-  //INCREMENT total clicks
-  Pictures.userClicksLeft--;
+  //Decrement total clicks
+  Pictures.userVotes++;
 
-  //tracker for what target index?
-  // console.log('Start Target: ', e.target.altName);
-  // var title = '';
 
   //count votes for each image, if image is selected then add to it's vote total
   for (var i = 0; i < Pictures.allInfo.length; i++) {
-    // console.log('allInfo Length: ', Pictures.allInfo.length);
+
+    // add to titles array if shown
     titles[i] = Pictures.allInfo[i].name;
+
+    //add views to array if shown
     totalViews[i] = Pictures.allInfo[i].views;
-    // console.log(Pictures.allInfo[i].altName === e.target.alt);
-    if (Pictures.allInfo[i].altName === e.target.alt) {
-      // console.log('!!!! VOTE COUNTED !!!', Pictures.userClicksLeft);
+
+    // if alt tags are equal then increment votes and add to vote total
+    if (Pictures.allInfo[i].alt === e.target.alt) {
+
       Pictures.allInfo[i].votes++;
       totalVotes[i] = Pictures.allInfo[i].votes;
       break;
@@ -297,7 +289,7 @@ Pictures.onClick = function(e) {
     // totalVotes[i] = Pictures.allInfo[i].votes;
   }
 
-  //render new images , use existing function
+  // After storing votes and views then render new images for the next vote
   Pictures.randomImage();
 
 };

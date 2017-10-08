@@ -1,5 +1,9 @@
 /*//Main Styling Page*/
 
+* {
+  text-align: center;
+}
+
 h1 {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -8,6 +12,8 @@ h1 {
 #instructions li {
   font-family: Arial, Helvetica, sans-serif;
   margin: 10px;
+  font-size: 18px;
+  list-style: none;
 }
 
 body  ul li p {
@@ -37,5 +43,6 @@ body section ul li img {
 }
 
 body canvas {
+  margin: 0 auto;
   text-align: center;
 }

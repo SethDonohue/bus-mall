@@ -14,15 +14,15 @@ Pictures.lastImages = [];
 
 // ++++++++++++++++++++++++++++++++++++++++ -----4------
 // refer to imgs from HTML
-var oneEl = document.getElementById('one');
-var twoEl = document.getElementById('two');
-var threeEl = document.getElementById('three');
+Pictures.oneEl = document.getElementById('one');
+Pictures.twoEl = document.getElementById('two');
+Pictures.threeEl = document.getElementById('three');
 //chart variables
-var votesChart;
+Pictures.votesChart;
 //Arrays to hold Data for the Charts
-var totalVotes = [];
-var titles = [];
-var totalViews = [];
+Pictures.totalVotes = [];
+Pictures.titles = [];
+Pictures.totalViews = [];
 
 //=========================CONSTRUCTORS=========================
 
@@ -111,12 +111,12 @@ Pictures.randomImage = function () {
 
   // ++++++++++++++++++++++++++++++++++++++++ -----8------
   // Update Source and Alt for each image
-  oneEl.src = Pictures.allInfo[random[0]].filePath;
-  oneEl.alt = Pictures.allInfo[random[0]].alt;
-  twoEl.src = Pictures.allInfo[random[1]].filePath;
-  twoEl.alt = Pictures.allInfo[random[1]].alt;
-  threeEl.src = Pictures.allInfo[random[2]].filePath;
-  threeEl.alt = Pictures.allInfo[random[2]].alt;
+  Pictures.oneEl.src = Pictures.allInfo[random[0]].filePath;
+  Pictures.oneEl.alt = Pictures.allInfo[random[0]].alt;
+  Pictures.twoEl.src = Pictures.allInfo[random[1]].filePath;
+  Pictures.twoEl.alt = Pictures.allInfo[random[1]].alt;
+  Pictures.threeEl.src = Pictures.allInfo[random[2]].filePath;
+  Pictures.threeEl.alt = Pictures.allInfo[random[2]].alt;
 
 
   // ++++++++++++++++++++++++++++++++++++++++ -----9------
@@ -156,13 +156,13 @@ Pictures.showResults = function () {
 function drawChart() {
 
   var ctx = document.getElementById('chart').getContext('2d');
-  votesChart = new Chart(ctx,{
+  Pictures.votesChart = new Chart(ctx,{
     type: 'bar',
     data: {
-      labels: titles,
+      labels: Pictures.titles,
       datasets: [{
         label: '# of Votes',
-        data: totalVotes,
+        data: Pictures.totalVotes,
         backgroundColor: [
           'rgba(255, 99, 132, 0.5)',
           'rgba(54, 162, 235, 0.5)',
@@ -215,10 +215,13 @@ function drawChart() {
           'rgba(153, 102, 255, 1)',
           'rgba(255, 159, 64, 1)'
         ],
-        borderWidth: 1
+        borderWidth: 1,
+        barPercentage: 0.6,
+        categoryPercentage: 1,
       }]
     },
     options: {
+      // duration: 100,
       responsive: false,
       scales: {
         yAxes: [{
@@ -245,9 +248,9 @@ Pictures.onClick = function(e) {
     localStorage.summedVotes = Pictures.summedVotes;
 
     //stop event listeners
-    oneEl.removeEventListener('click',Pictures.onClick);
-    twoEl.removeEventListener('click',Pictures.onClick);
-    threeEl.removeEventListener('click',Pictures.onClick);
+    Pictures.oneEl.removeEventListener('click',Pictures.onClick);
+    Pictures.twoEl.removeEventListener('click',Pictures.onClick);
+    Pictures.threeEl.removeEventListener('click',Pictures.onClick);
 
     //SHOW RESULTS, function to show resultsList
     Pictures.showResults(); //OBOSOLETE DUE TO CHART
@@ -273,20 +276,19 @@ Pictures.onClick = function(e) {
   //count votes for each image, if image is selected then add to it's vote total
   for (var i = 0; i < Pictures.allInfo.length; i++) {
 
-    // add to titles array if shown
-    titles[i] = Pictures.allInfo[i].name;
+    // add to Pictures.titles array if shown
+    Pictures.titles[i] = Pictures.allInfo[i].name;
 
     //add views to array if shown
-    totalViews[i] = Pictures.allInfo[i].views;
+    Pictures.totalViews[i] = Pictures.allInfo[i].views;
 
     // if alt tags are equal then increment votes and add to vote total
     if (Pictures.allInfo[i].alt === e.target.alt) {
 
       Pictures.allInfo[i].votes++;
-      totalVotes[i] = Pictures.allInfo[i].votes;
+      Pictures.totalVotes[i] = Pictures.allInfo[i].votes;
       break;
     }
-    // totalVotes[i] = Pictures.allInfo[i].votes;
   }
 
   // After storing votes and views then render new images for the next vote
@@ -299,9 +301,9 @@ Pictures.onClick = function(e) {
 
 //Event Listner to wait for CLICK on Images
 // ++++++++++++++++++++++++++++++++++++++++ -----12------
-oneEl.addEventListener('click', Pictures.onClick);
-twoEl.addEventListener('click', Pictures.onClick);
-threeEl.addEventListener('click', Pictures.onClick);
+Pictures.oneEl.addEventListener('click', Pictures.onClick);
+Pictures.twoEl.addEventListener('click', Pictures.onClick);
+Pictures.threeEl.addEventListener('click', Pictures.onClick);
 
 // ++++++++++++++++++++++++++++++++++++++++ -----11------
 // Call random Image on page load!

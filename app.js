@@ -4,7 +4,6 @@
 
 // ++++++++++++++++++++++++++++++++++++++++ -----1-----*** This is purely for my thought process to keep track of the order I built
 //Array to store All Objects  things
-Pictures.allInfo = [];
 //Keep track of user click left
 Pictures.userVotes = 0;
 //track previously deisplayed images
@@ -20,8 +19,8 @@ Pictures.threeEl = document.getElementById('three');
 //chart variables
 Pictures.votesChart;
 //Arrays to hold Data for the Charts
-Pictures.totalVotes = [];
 Pictures.titles = [];
+Pictures.totalVotes = [];
 Pictures.totalViews = [];
 
 //=========================CONSTRUCTORS=========================
@@ -52,7 +51,10 @@ if(localStorage.allInfo) {
 
 }else {
   console.log('NO LOCAL STORAGE');
+  Pictures.allInfo = [];
   Pictures.summedVotes = 0;
+  Pictures.totalVotes = [];
+  Pictures.totalViews = [];
   // ++++++++++++++++++++++++++++++++++++++++ -----3------
   //If local storage doesn't exist then make new Image instances/ objects
 
@@ -77,13 +79,14 @@ if(localStorage.allInfo) {
   new Pictures ('Water Can', 'img/water-can.jpg','watercan');
   new Pictures ('Wine Glass', 'img/wine-glass.jpg','wineglass');
 
-  //Ensure Data for charts is correct length
-  for(var i = 0; i < Pictures.allInfo.length; i++) {
-    Pictures.titles[i] = Pictures.allInfo[i].name;
-    Pictures.totalVotes[i] = Pictures.allInfo[i].votes;
-    Pictures.totalViews[i] = Pictures.allInfo[i].views;
-  }
 };
+
+//Ensure Data for charts is correct length
+for(var i = 0; i < Pictures.allInfo.length; i++) {
+  Pictures.titles[i] = Pictures.allInfo[i].name;
+  Pictures.totalVotes[i] = Pictures.allInfo[i].votes;
+  Pictures.totalViews[i] = Pictures.allInfo[i].views;
+}
 
 //=========================FUNCTION DECLARATIONS=========================
 
@@ -247,7 +250,6 @@ Pictures.onClick = function(e) {
   Pictures.summedVotes++;
 
   for (var i = 0; i < Pictures.allInfo.length; i++) {
-    // console.log('loop counter: ', i);
     //add views to array if shown
     Pictures.totalViews[i] = Pictures.allInfo[i].views;
 
@@ -303,8 +305,6 @@ Pictures.onClick = function(e) {
 
 
 //=========================FUNCTIONAL CODE ON PAGE LOAD & EVENT LISTNERS=========================
-
-
 
 //Event Listner to wait for CLICK on Images
 // ++++++++++++++++++++++++++++++++++++++++ -----12------

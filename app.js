@@ -42,13 +42,12 @@ function Pictures (name, filePath, alt) {
 // If localstorage exists then retrieve storage
 if(localStorage.allInfo) {
   console.log('LOCAL STORAGE EXISTS');
-  console.log(typeof(localStorage.summedVotes));
   Pictures.allInfo = JSON.parse(localStorage.allInfo);
   // Total votes across all userVotes
   console.log('Summed Votes from Storage: ', localStorage.summedVotes);
-  console.log(typeof(localStorage.summedVotes));
   Pictures.summedVotes = parseInt(localStorage.summedVotes);
-  console.log(typeof(Pictures.summedVotes));
+
+  // add to Pictures.titles array if shown
 
 
 }else {
@@ -77,6 +76,13 @@ if(localStorage.allInfo) {
   new Pictures ('Usb', 'img/usb.gif','usb');
   new Pictures ('Water Can', 'img/water-can.jpg','watercan');
   new Pictures ('Wine Glass', 'img/wine-glass.jpg','wineglass');
+
+  //Ensure Data for charts is correct length
+  for(var i = 0; i < Pictures.allInfo.length; i++) {
+    Pictures.titles[i] = Pictures.allInfo[i].name;
+    Pictures.totalVotes[i] = Pictures.allInfo[i].votes;
+    Pictures.totalViews[i] = Pictures.allInfo[i].views;
+  }
 };
 
 //=========================FUNCTION DECLARATIONS=========================
@@ -97,15 +103,15 @@ Pictures.randomImage = function () {
 
   // ++++++++++++++++++++++++++++++++++++++++ -----6------
   //make sure each image was not used in last sequence! If they are randomize them again
-  while (Pictures.lastImages.includes(random[0]) || Pictures.lastImages.includes(random[1]) ||   Pictures.lastImages.includes(random[2])) {
-    console.log(' Picture used last turn!');
+  while (Pictures.lastImages.includes(random[0]) || Pictures.lastImages.includes(random[1]) ||  Pictures.lastImages.includes(random[2])) {
+    // console.log(' Picture used last turn!');
     random = Pictures.randomIndex ();
   }
 
   // ++++++++++++++++++++++++++++++++++++++++ -----7------
   // make sure the random images on current view are not equal to each other!!! If they are randomize them again
   while (random[0] === random[1] || random[0] === random[2] || random[1] === random[2]) {
-    console.log(' Current pictures are equal to each other! Redraw to remove duplicates!!! ');
+    // console.log(' Current pictures are equal to each other! Redraw to remove duplicates!!! ');
     random = Pictures.randomIndex ();
   }
 
@@ -154,7 +160,6 @@ Pictures.showResults = function () {
 // ++++++++++++++++++++++++++++++++++++++++ -----13------
 
 function drawChart() {
-
   var ctx = document.getElementById('chart').getContext('2d');
   Pictures.votesChart = new Chart(ctx,{
     type: 'bar',
@@ -221,10 +226,11 @@ function drawChart() {
       }]
     },
     options: {
-      // duration: 100,
+      duration: 100,
       responsive: false,
       scales: {
         yAxes: [{
+          min: 0,
           ticks: {
             beginAtZero:true
           }
@@ -236,49 +242,12 @@ function drawChart() {
 
 //=========================EVENT HANLDER=========================
 Pictures.onClick = function(e) {
-
-  //kick out if we hit maximum clicks
-  if(Pictures.userVotes > 23) {
-    console.log('out of votes');
-    //Store info into localstoarge
-    localStorage.allInfo = JSON.stringify(Pictures.allInfo);
-
-    //add 25 to toal summed votes for all users
-    Pictures.summedVotes = (Pictures.summedVotes + 25);
-    localStorage.summedVotes = Pictures.summedVotes;
-
-    //stop event listeners
-    Pictures.oneEl.removeEventListener('click',Pictures.onClick);
-    Pictures.twoEl.removeEventListener('click',Pictures.onClick);
-    Pictures.threeEl.removeEventListener('click',Pictures.onClick);
-
-    //SHOW RESULTS, function to show resultsList
-    Pictures.showResults(); //OBOSOLETE DUE TO CHART
-
-    //Create Chart
-    drawChart ();
-
-    // Clear out instructions, pictures and listed results to show chart
-    document.getElementById('voting').innerHTML = '';
-    document.getElementById('results').innerHTML = '';
-    document.getElementById('instructions').innerHTML = '';
-
-    //Change the header to address chart
-    document.getElementById('header1').textContent = 'Here are the Cumulative Votes Per Item after ' + Pictures.summedVotes + ' total votes.';
-    document.getElementById('header2').textContent = (Pictures.summedVotes / 25) + ' users have voted.';
-
-  }
-
-  //Decrement total clicks
+  //increment total clicks
   Pictures.userVotes++;
+  Pictures.summedVotes++;
 
-
-  //count votes for each image, if image is selected then add to it's vote total
   for (var i = 0; i < Pictures.allInfo.length; i++) {
-
-    // add to Pictures.titles array if shown
-    Pictures.titles[i] = Pictures.allInfo[i].name;
-
+    // console.log('loop counter: ', i);
     //add views to array if shown
     Pictures.totalViews[i] = Pictures.allInfo[i].views;
 
@@ -290,6 +259,42 @@ Pictures.onClick = function(e) {
       break;
     }
   }
+  //kick out if we hit maximum clicks
+  if(Pictures.userVotes > 24) {
+    console.log('out of votes');
+    //Store info into localstoarge
+    localStorage.allInfo = JSON.stringify(Pictures.allInfo);
+
+    //add 25 to toal summed votes for all users
+    // Pictures.summedVotes = (Pictures.summedVotes + 25);
+    localStorage.summedVotes = Pictures.summedVotes;
+
+    //stop event listeners
+    Pictures.oneEl.removeEventListener('click',Pictures.onClick);
+    Pictures.twoEl.removeEventListener('click',Pictures.onClick);
+    Pictures.threeEl.removeEventListener('click',Pictures.onClick);
+
+    //SHOW RESULTS, function to show resultsList
+    Pictures.showResults(); //OBOSOLETE DUE TO CHART
+
+    //Create Chart
+    document.getElementById('chartDiv').innerHTML = '<canvas id="chart" width="960px" height="600px"></canvas>';
+
+    // Clear out instructions, pictures and listed results to show chart
+    document.getElementById('voting').innerHTML = '';
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('instructions').innerHTML = '';
+
+    //Change the header to address chart
+    document.getElementById('header1').textContent = 'Here are the Cumulative Votes Per Item after ' + Pictures.summedVotes + ' total votes.';
+    document.getElementById('header2').textContent = (Pictures.summedVotes / 25) + ' users have voted.';
+
+    drawChart ();
+  }
+
+
+
+  //count votes for each image, if image is selected then add to it's vote total
 
   // After storing votes and views then render new images for the next vote
   Pictures.randomImage();
@@ -298,6 +303,8 @@ Pictures.onClick = function(e) {
 
 
 //=========================FUNCTIONAL CODE ON PAGE LOAD & EVENT LISTNERS=========================
+
+
 
 //Event Listner to wait for CLICK on Images
 // ++++++++++++++++++++++++++++++++++++++++ -----12------

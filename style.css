@@ -39,10 +39,23 @@ body section ul li img {
 
 #results li {
   margin: 2px;
-  /*border: 1px solid black;*/
 }
 
 body canvas {
   margin: 0 auto;
   text-align: center;
+}
+
+
+.stripe-1 {
+  color: white;
+  background: repeating-linear-gradient(
+    25deg,
+    hsla(0, 100%, 85%, 0.5) 2px,
+    hsla(0, 100%, 55%, 0.5) 10px,
+    hsla(0, 100%, 30%, 0.5) 20px,
+    hsla(0, 100%, 10%, 0.5) 40px
+  );
+  height: 10px;
+  /*margin-left: 0 auto;*/
 }
